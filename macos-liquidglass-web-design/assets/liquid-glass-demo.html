@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liquid Glass Design Demo</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Glass surface */
+      --lg-blur-xs: 8px;
+      --lg-blur-sm: 16px;
+      --lg-blur-md: 40px;
+      --lg-blur-lg: 60px;
+      --lg-saturate-subtle: 120%;
+      --lg-saturate-normal: 180%;
+      --lg-saturate-vivid: 220%;
+
+      /* Surfaces */
+      --lg-surface-clear: rgba(255, 255, 255, 0.06);
+      --lg-surface-thin: rgba(255, 255, 255, 0.12);
+      --lg-surface-regular: rgba(255, 255, 255, 0.18);
+      --lg-surface-thick: rgba(255, 255, 255, 0.28);
+
+      /* Borders */
+      --lg-border-subtle: rgba(255, 255, 255, 0.08);
+      --lg-border-light: rgba(255, 255, 255, 0.15);
+      --lg-border-medium: rgba(255, 255, 255, 0.22);
+
+      /* Text */
+      --lg-text-on-glass: rgba(255, 255, 255, 0.95);
+      --lg-text-on-glass-secondary: rgba(255, 255, 255, 0.7);
+
+      /* Shadows */
+      --lg-elevation-1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --lg-elevation-2: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --lg-elevation-3: 0 8px 32px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.06);
+      --lg-elevation-4: 0 16px 48px rgba(0, 0, 0, 0.16), 0 8px 16px rgba(0, 0, 0, 0.08);
+
+      /* Radii */
+      --lg-radius-sm: 12px;
+      --lg-radius-md: 20px;
+      --lg-radius-lg: 28px;
+      --lg-radius-xl: 36px;
+      --lg-radius-full: 9999px;
+
+      /* Spacing */
+      --lg-space-2: 8px;
+      --lg-space-3: 12px;
+      --lg-space-4: 16px;
+      --lg-space-5: 20px;
+      --lg-space-6: 24px;
+      --lg-space-8: 32px;
+
+      /* Typography */
+      --lg-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+      --lg-font-xs: 11px;
+      --lg-font-sm: 13px;
+      --lg-font-base: 15px;
+      --lg-font-md: 17px;
+      --lg-font-lg: 20px;
+      --lg-font-xl: 24px;
+      --lg-font-2xl: 32px;
+      --lg-font-3xl: 40px;
+
+      /* Motion */
+      --lg-ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+      --lg-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --lg-duration-fast: 150ms;
+      --lg-duration-normal: 300ms;
+      --lg-duration-slow: 500ms;
+
+      /* Specular */
+      --lg-specular-top-left: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 30%, transparent 60%);
+      --lg-specular-top: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.05) 40%, transparent 70%);
+      --lg-inner-glow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    }
+
+    body {
+      font-family: var(--lg-font-family);
+      min-height: 100vh;
+      background:
+        radial-gradient(at 20% 80%, rgba(124, 58, 237, 0.6) 0%, transparent 50%),
+        radial-gradient(at 80% 20%, rgba(6, 182, 212, 0.5) 0%, transparent 50%),
+        radial-gradient(at 60% 60%, rgba(245, 158, 11, 0.3) 0%, transparent 50%),
+        radial-gradient(at 30% 30%, rgba(236, 72, 153, 0.3) 0%, transparent 40%),
+        #0f0a1e;
+      color: var(--lg-text-on-glass);
+      overflow-x: hidden;
+    }
+
+    /* ===== Navbar ===== */
+    .lg-navbar {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(90%, 900px);
+      padding: 12px 24px;
+      background: var(--lg-surface-thin);
+      backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate-normal));
+      -webkit-backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate-normal));
+      border: 1px solid var(--lg-border-light);
+      border-radius: var(--lg-radius-full);
+      box-shadow: var(--lg-elevation-3);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lg-navbar::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--lg-specular-top);
+      border-radius: inherit;
+      pointer-events: none;
+    }
+
+    .lg-navbar-brand {
+      font-size: var(--lg-font-md);
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lg-navbar-links {
+      display: flex;
+      gap: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lg-nav-link {
+      color: var(--lg-text-on-glass-secondary);
+      text-decoration: none;
+      padding: 6px 14px;
+      border-radius: var(--lg-radius-full);
+      font-size: var(--lg-font-sm);
+      transition: all var(--lg-duration-fast) var(--lg-ease-default);
+    }
+
+    .lg-nav-link:hover { color: var(--lg-text-on-glass); background: rgba(255,255,255,0.1); }
+    .lg-nav-link.active { color: var(--lg-text-on-glass); background: rgba(255,255,255,0.15); }
+
+    /* ===== Main Content ===== */
+    .main-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 120px 24px 60px;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .hero h1 {
+      font-size: var(--lg-font-3xl);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--lg-space-4);
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: var(--lg-font-lg);
+      color: var(--lg-text-on-glass-secondary);
+      max-width: 600px;
+      margin: 0 auto var(--lg-space-8);
+      line-height: 1.6;
+    }
+
+    /* ===== Button ===== */
+    .lg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--lg-space-2);
+      padding: 12px 24px;
+      font-size: var(--lg-font-sm);
+      font-weight: 500;
+      font-family: var(--lg-font-family);
+      color: var(--lg-text-on-glass);
+      background: var(--lg-surface-regular);
+      backdrop-filter: blur(var(--lg-blur-sm)) saturate(var(--lg-saturate-subtle));
+      -webkit-backdrop-filter: blur(var(--lg-blur-sm)) saturate(var(--lg-saturate-subtle));
+      border: 1px solid var(--lg-border-medium);
+      border-radius: var(--lg-radius-full);
+      cursor: pointer;
+      transition: all var(--lg-duration-fast) var(--lg-ease-default);
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--lg-elevation-1), var(--lg-inner-glow);
+      text-decoration: none;
+    }
+
+    .lg-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--lg-specular-top);
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .lg-btn:hover {
+      background: var(--lg-surface-thick);
+      box-shadow: var(--lg-elevation-2), var(--lg-inner-glow);
+      transform: translateY(-2px);
+    }
+
+    .lg-btn:active {
+      transform: translateY(0) scale(0.96);
+    }
+
+    .lg-btn-primary {
+      background: rgba(59, 130, 246, 0.55);
+      border-color: rgba(96, 165, 250, 0.4);
+    }
+
+    .lg-btn-primary:hover {
+      background: rgba(59, 130, 246, 0.7);
+    }
+
+    /* ===== Cards Grid ===== */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--lg-space-6);
+      margin-bottom: 60px;
+    }
+
+    .lg-card {
+      background: var(--lg-surface-thin);
+      backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate-normal));
+      -webkit-backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate-normal));
+      border: 1px solid var(--lg-border-light);
+      border-radius: var(--lg-radius-lg);
+      box-shadow: var(--lg-elevation-2);
+      overflow: hidden;
+      transition: all var(--lg-duration-normal) var(--lg-ease-default);
+      position: relative;
+      padding: var(--lg-space-6);
+    }
+
+    .lg-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--lg-specular-top-left);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .lg-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+      pointer-events: none;
+    }
+
+    .lg-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--lg-elevation-4);
+      border-color: var(--lg-border-medium);
+    }
+
+    .lg-card-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: var(--lg-radius-sm);
+      font-size: 22px;
+      margin-bottom: var(--lg-space-4);
+      position: relative;
+      z-index: 1;
+    }
+
+    .lg-card h3 {
+      font-size: var(--lg-font-md);
+      font-weight: 600;
+      margin-bottom: var(--lg-space-2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .lg-card p {
+      font-size: var(--lg-font-sm);
+      color: var(--lg-text-on-glass-secondary);
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== Form Panel ===== */
+    .form-panel {
+      background: var(--lg-surface-thin);
+      backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate-normal));
+      -webkit-backdrop-filter: blur(var(--lg-blur-md)) saturate(var(--lg-saturate-normal));
+      border: 1px solid var(--lg-border-light);
+      border-radius: var(--lg-radius-xl);
+      box-shadow: var(--lg-elevation-3);
+      padding: var(--lg-space-8);
+      max-width: 500px;
+      margin: 0 auto 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--lg-specular-top-left);
+      pointer-events: none;
+    }
+
+    .form-panel h2 {
+      font-size: var(--lg-font-xl);
+      font-weight: 600;
+      margin-bottom: var(--lg-space-6);
+      position: relative;
+      z-index: 1;
+    }
+
+    .lg-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--lg-space-2);
+      margin-bottom: var(--lg-space-5);
+      position: relative;
+      z-index: 1;
+    }
+
+    .lg-label {
+      font-size: var(--lg-font-sm);
+      font-weight: 500;
+      color: var(--lg-text-on-glass);
+    }
+
+    .lg-input {
+      padding: 12px 16px;
+      font-size: var(--lg-font-base);
+      font-family: var(--lg-font-family);
+      color: var(--lg-text-on-glass);
+      background: var(--lg-surface-clear);
+      backdrop-filter: blur(var(--lg-blur-sm));
+      -webkit-backdrop-filter: blur(var(--lg-blur-sm));
+      border: 1px solid var(--lg-border-light);
+      border-radius: var(--lg-radius-sm);
+      outline: none;
+      transition: all var(--lg-duration-fast) var(--lg-ease-default);
+      box-shadow: var(--lg-inner-glow);
+      width: 100%;
+    }
+
+    .lg-input::placeholder {
+      color: var(--lg-text-on-glass-secondary);
+      opacity: 0.5;
+    }
+
+    .lg-input:focus {
+      border-color: rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), var(--lg-inner-glow);
+      background: var(--lg-surface-thin);
+    }
+
+    /* ===== Badges ===== */
+    .badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--lg-space-3);
+      justify-content: center;
+      margin-bottom: 60px;
+    }
+
+    .lg-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 14px;
+      font-size: var(--lg-font-xs);
+      font-weight: 500;
+      color: var(--lg-text-on-glass);
+      background: var(--lg-surface-thin);
+      backdrop-filter: blur(var(--lg-blur-xs));
+      border: 1px solid var(--lg-border-subtle);
+      border-radius: var(--lg-radius-full);
+    }
+
+    .lg-badge-blue { background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); }
+    .lg-badge-purple { background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.3); }
+    .lg-badge-pink { background: rgba(236, 72, 153, 0.15); border-color: rgba(236, 72, 153, 0.3); }
+    .lg-badge-green { background: rgba(34, 197, 94, 0.15); border-color: rgba(34, 197, 94, 0.3); }
+    .lg-badge-orange { background: rgba(249, 115, 22, 0.15); border-color: rgba(249, 115, 22, 0.3); }
+    .lg-badge-cyan { background: rgba(6, 182, 212, 0.15); border-color: rgba(6, 182, 212, 0.3); }
+
+    /* ===== Floating orbs (background decoration) ===== */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      pointer-events: none;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 300px; height: 300px;
+      background: #7c3aed;
+      top: 10%; left: 10%;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: #06b6d4;
+      top: 50%; right: 5%;
+      animation-delay: -3s;
+    }
+
+    .orb-3 {
+      width: 250px; height: 250px;
+      background: #f59e0b;
+      bottom: 15%; left: 30%;
+      animation-delay: -5s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .hero h1 { font-size: var(--lg-font-2xl); }
+      .lg-navbar { width: 94%; padding: 10px 16px; }
+      .lg-navbar-links { display: none; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- Navbar -->
+  <nav class="lg-navbar">
+    <div class="lg-navbar-brand">Liquid Glass</div>
+    <div class="lg-navbar-links">
+      <a href="#" class="lg-nav-link active">Home</a>
+      <a href="#" class="lg-nav-link">Features</a>
+      <a href="#" class="lg-nav-link">About</a>
+      <a href="#" class="lg-nav-link">Contact</a>
+    </div>
+    <a href="#" class="lg-btn" style="padding: 8px 16px; font-size: 12px;">Get Started</a>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero">
+      <h1>Liquid Glass Design</h1>
+      <p>Inspired by macOS 26's translucent design language. Fluid surfaces, dynamic light, and depth that responds to what's beneath.</p>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="#" class="lg-btn lg-btn-primary">Explore Components</a>
+        <a href="#" class="lg-btn">View Source</a>
+      </div>
+    </section>
+
+    <!-- Badges -->
+    <section class="badges-row">
+      <span class="lg-badge lg-badge-blue">Translucent</span>
+      <span class="lg-badge lg-badge-purple">Frosted Blur</span>
+      <span class="lg-badge lg-badge-pink">Specular Light</span>
+      <span class="lg-badge lg-badge-green">Adaptive Tint</span>
+      <span class="lg-badge lg-badge-orange">Dynamic Depth</span>
+      <span class="lg-badge lg-badge-cyan">Fluid Motion</span>
+    </section>
+
+    <!-- Cards -->
+    <section class="cards-grid">
+      <div class="lg-card">
+        <div class="lg-card-icon">&#9670;</div>
+        <h3>Translucent Surfaces</h3>
+        <p>Multi-layered glass panels reveal content beneath, creating depth and spatial awareness through transparency.</p>
+      </div>
+      <div class="lg-card">
+        <div class="lg-card-icon">&#10024;</div>
+        <h3>Specular Highlights</h3>
+        <p>Dynamic light reflections simulate real glass behavior, with gradients that shift based on element position.</p>
+      </div>
+      <div class="lg-card">
+        <div class="lg-card-icon">&#9775;</div>
+        <h3>Fluid Animations</h3>
+        <p>Spring-based motion curves create organic, responsive interactions that feel natural and satisfying.</p>
+      </div>
+    </section>
+
+    <!-- Form Panel -->
+    <section class="form-panel">
+      <h2>Contact Us</h2>
+      <div class="lg-input-group">
+        <label class="lg-label">Name</label>
+        <input type="text" class="lg-input" placeholder="Your name" />
+      </div>
+      <div class="lg-input-group">
+        <label class="lg-label">Email</label>
+        <input type="email" class="lg-input" placeholder="you@example.com" />
+      </div>
+      <div class="lg-input-group">
+        <label class="lg-label">Message</label>
+        <textarea class="lg-input" placeholder="Write your message..." style="min-height: 100px; resize: vertical;"></textarea>
+      </div>
+      <button class="lg-btn lg-btn-primary" style="width: 100%; justify-content: center; margin-top: 8px;">Send Message</button>
+    </section>
+  </main>
+</body>
+</html>
