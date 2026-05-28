@@ -12,6 +12,7 @@
 | 技能 | 说明 |
 |------|------|
 | [macos-liquidglass-web-design](macos-liquidglass-web-design/) | macOS 26 Liquid Glass 液态毛玻璃设计语言的前端 Web 适配方案。提供完整的 CSS 变量体系、组件库和可运行演示页面。 |
+| [animation-principles](animation-principles/) | 迪士尼 12 条动画原则的完整技能库（144 个子技能）。覆盖 CSS/GSAP/Framer Motion 等主流框架，适用于 Web 动画、微交互、游戏 UI、数据可视化等全场景。[【原项目地址：https://github.com/dylantarre/animation-principles】](https://github.com/dylantarre/animation-principles) |
 
 ## 🏗️ 技能结构
 
@@ -43,6 +44,7 @@ npx skills add Lee-zg/skills
 
 # 仅安装指定技能
 npx skills add Lee-zg/skills --skill macos-liquidglass-web-design
+npx skills add Lee-zg/skills --skill animation-principles
 
 # 先预览可用技能，不执行安装
 npx skills add Lee-zg/skills --list
