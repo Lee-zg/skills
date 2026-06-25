@@ -1,0 +1,20 @@
+{
+  "name": "vue2-best-practices-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Runnable demo for the vue2-best-practices skill — interactive ❌/✅ examples of Vue 2 reactivity, rendering, props, memory and bundle rules.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "2.7.16",
+    "vuex": "3.6.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue2": "2.3.3",
+    "vite": "5.4.10"
+  }
+}

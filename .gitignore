@@ -9,6 +9,7 @@ Thumbs.db
 .idea/
 *.iml
 .history
+.claude/
 
 # Project
 node_modules/
