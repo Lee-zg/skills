@@ -14,6 +14,7 @@
 | [macos-liquidglass-web-design](macos-liquidglass-web-design/) | macOS 26 Liquid Glass 液态毛玻璃设计语言的前端 Web 适配方案。提供完整的 CSS 变量体系、组件库和可运行演示页面。 |
 | [animation-principles](animation-principles/) | 迪士尼 12 条动画原则的完整技能库（144 个子技能）。覆盖 CSS/GSAP/Framer Motion 等主流框架，适用于 Web 动画、微交互、游戏 UI、数据可视化等全场景。[【原项目地址：https://github.com/dylantarre/animation-principles】](https://github.com/dylantarre/animation-principles) |
 | [vue2-best-practices](vue2-best-practices/) | Vue 2（Options API）代码风格与性能最佳实践技能。8 大类 55 条规则，覆盖响应式正确性、打包分割、渲染优化、数据请求、Vuex、内存管理等，专治「数据改了视图没更新」等 Vue 2 经典坑。**附带一个可运行的 Vite + Vue 2.7 演示工程**（[demo/](vue2-best-practices/demo/)，左红右绿交互对比）。参考 [vercel-react-best-practices](https://github.com/vercel-labs/agent-skills) 组织方式。 |
+| [design-engineering](design-engineering/) | 面向设计工程师的动画与界面设计技能集合，整合自 emilkowalski/skills 的 7 个子技能：动画取舍与缓动/时长、Apple 设计与流体动效原则、动画术语词汇、动画评审(review)、全局动画审计与交付计划(improve)、发现动画机会、UI 库选型。[【原项目地址：https://github.com/emilkowalski/skills】](https://github.com/emilkowalski/skills) |
 
 ## 🏗️ 技能结构
 
@@ -47,6 +48,7 @@ npx skills add Lee-zg/skills
 npx skills add Lee-zg/skills --skill macos-liquidglass-web-design
 npx skills add Lee-zg/skills --skill animation-principles
 npx skills add Lee-zg/skills --skill vue2-best-practices
+npx skills add Lee-zg/skills --skill design-engineering
 
 # 先预览可用技能，不执行安装
 npx skills add Lee-zg/skills --list
